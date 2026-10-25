@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "com.visualsx.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["CameraMixin", "MouseMixin", "NetworkHandlerMixin"],
+  "injectors": { "defaultRequire": 0 }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "visualsx",
+  "version": "0.2.0",
+  "name": "_VisualsX_",
+  "description": "HUD, orqa inventar paneli va erkin kamera (F5)",
+  "environment": "client",
+  "entrypoints": { "client": ["com.visualsx.VisualsXClient"] },
+  "mixins": ["visualsx.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
