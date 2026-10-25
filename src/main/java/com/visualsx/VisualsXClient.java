@@ -7,27 +7,26 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class VisualsXClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        Config.load();
+
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,
             Identifier.of("visualsx", "hud"), Hud::render);
 
         KeyBinding.Category cat = KeyBinding.Category.create(Identifier.of("visualsx", "main"));
-        KeyBinding toggle = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding("key.visualsx.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_SHIFT, cat));
+        KeyBinding menu = KeyBindingHelper.registerKeyBinding(
+            new KeyBinding("key.visualsx.menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_SHIFT, cat));
         KeyBinding sync = KeyBindingHelper.registerKeyBinding(
             new KeyBinding("key.visualsx.sync", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, cat));
 
         ClientTickEvents.END_CLIENT_TICK.register(c -> {
-            while (toggle.wasPressed()) {
-                FreeLook.enabled = !FreeLook.enabled;
-                if (c.player != null)
-                    c.player.sendMessage(Text.literal("Erkin qarash: " + (FreeLook.enabled ? "ON" : "OFF")), true);
+            while (menu.wasPressed()) {
+                if (c.currentScreen == null) c.setScreen(new MenuScreen());
             }
             while (sync.wasPressed()) {
                 if (c.player != null && FreeLook.active()) c.player.setYaw(FreeLook.yaw);
