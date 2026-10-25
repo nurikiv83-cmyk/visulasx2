@@ -1,20 +1,22 @@
 package com.visualsx.mixin;
 
 import com.visualsx.FreeLook;
-import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Mouse.class)
+@Mixin(Entity.class)
 public class MouseMixin {
-    @Redirect(method = "updateMouse",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"),
-        require = 0)
-    private void visualsx$look(ClientPlayerEntity player, double dx, double dy) {
+    @Inject(method = "changeLookDirection", at = @At("HEAD"), cancellable = true, require = 0)
+    private void visualsx$look(double dx, double dy, CallbackInfo ci) {
+        if (!((Object) this instanceof ClientPlayerEntity)) return;
         FreeLook.mouseHooked = true;
-        if (FreeLook.active()) FreeLook.turn(dx, dy);
-        else player.changeLookDirection(dx, dy);
+        if (FreeLook.active()) {
+            FreeLook.turn(dx, dy);
+            ci.cancel();
+        }
     }
 }
